@@ -1,11 +1,13 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import One from '@/components/One'
+import Index from '@/components/Index'
 import Two from '@/components/Two'
 import Count from '@/components/Count'
 import Table from '@/components/Table'
 import ArchiveManage from '@/components/manage/ArchiveManage'
+import InspectManage from '@/components/manage/InspectManage'
+import TestTable from '@/components/TestTable'
 
 Vue.use(Router)
 
@@ -14,20 +16,12 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      redirect: '/home'
+      redirect: '/index'
     }, {
       path: '/home',
       component: Home,
       children: [
         {
-          path: '/one',
-          component: One,
-          alias: '/oneother',
-          beforeEnter: (to, from, next) => {
-            console.log('进入前执行')
-            next()
-          }
-        }, {
           path: '/home/two/:id/:name',
           component: Two
         }, {
@@ -41,13 +35,25 @@ const router = new Router({
           path: '/table',
           component: Table
         }, {
-          path: '/manage/archiveManage',
-          component: ArchiveManage
+          path: '/testTable',
+          component: TestTable
         }
       ]
     }, {
       path: '*',
       component: () => import('@/components/404')
+    }, {
+      path: '/index',
+      component: Index,
+      children: [
+        { 
+          path: '/manage/archiveManage',
+          component: ArchiveManage
+        }, {
+          path: '/manage/inspectManage',
+          component: InspectManage
+        }
+      ]
     }
   ]
 })

@@ -3,14 +3,12 @@
     <table>
       <thead>
         <tr>
-          <th v-for="item in columns" :key="item.key">{{item.title}}</th>
+          <th v-for="column in columns" :key="column.key">{{column.title}}</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="obj in dataSource" :key="obj.key">
-          <td>{{obj.name}}</td>
-          <td>{{obj.age}}</td>
-          <td>{{obj.address}}</td>
+        <tr v-for="content in dataSource" :key="content.id">
+          <td v-for="column in columns" :key="column.key">{{content[column.dataIndex]}}</td>
         </tr>
       </tbody>
     </table>
@@ -21,26 +19,14 @@
 export default {
   data () {
     return {
-      tableData: ''
+      contents: this.dataSource
     }
   },
-  props: ['here', 'dataSource', 'columns'],
-  created: function () {
-
-  },
-  methods: {
-    loadTable () {
-
-    }
-  }
+  props: ['dataSource', 'columns']
 }
 </script>
 
 <style scoped>
-.hello {
-  padding: 15px;
-}
-
 button {
   margin-bottom: 15px;
 }

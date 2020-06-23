@@ -1,70 +1,107 @@
 <template>
   <div class="container">
-    <h1>TestManage</h1>
     <Table
-      here="wang"
-      v-bind:dataSource="dataSource"
-      :columns="columns"></Table>
+      stripe
+      border
+      :data="dataSource"
+      :columns="columns"
+      :loading="tableLoading"></Table>
+    <div class="page-container">
+      <div class="page-box">
+        <Page
+          show-total
+          :total="pageTotal"
+          :current="pageCurrent"
+          @on-change="changePage"></Page>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import fetch from '@/util/fetch'
-import Table from '@/components/Table'
 export default {
   data () {
     return {
-      url: 'http://192.168.201.243/fw-pm-project/projectMain/queryPage?pageNo=1&pageSize=10&token=29c7a06c-1daa-4a84-a041-2f1a055ed73a',
+      url: 'http://192.168.201.243/fw-pm-project/projectMain/queryPage?pageSize=10',
+      token: 'e00449ef-37ff-4d10-a3dd-41a17530eb3c',
       params: {
         'projectCode': null,
         'projectName': null
       },
-      dataSource: [
-        {
-          key: '1',
-          name: '胡彦斌',
-          age: 32,
-          address: '西湖区湖底公园1号'
-        }, {
-          key: '2',
-          name: '胡彦祖',
-          age: 42,
-          address: '西湖区湖底公园1号'
-        }
-      ],
+      tableLoading: true,
+      dataSource: [],
       columns: [
         {
-          title: '姓名',
-          dataIndex: 'name',
-          key: 'name'
+          title: '所属项目',
+          key: 'projectName',
+          align: 'center'
         }, {
-          title: '年龄',
-          dataIndex: 'age',
-          key: 'age'
+          title: '项目编号',
+          key: 'projectCode',
+          align: 'center',
+          width: 250
         }, {
-          title: '住址',
-          dataIndex: 'address',
-          key: 'address'
+          title: '发起时间',
+          key: 'createTime',
+          render: function (h, params) {
+            return h('div', params.row.createTime.replace(/-/g, '/'))
+          },
+          align: 'center',
+          width: 250
+        }, {
+          title: '审批结果',
+          key: 'statusDesc',
+          align: 'center',
+          width: 250
         }
-      ]
+      ],
+      pageTotal: 0,
+      pageCurrent: 1
     }
   },
   created: function () {
-    // let that = this
-    // fetch.post(this.url, this.params).then(function (res) {
-    //   if (res.code === 200) {
-    //     that.tableData = res.obj.list
-    //     console.log(that.tableData)
-    //   }
-    // }).catch(function (error) {
-    //   console.log(error)
-    // })
+    this.loadTableData()
   },
-  components: {
-    'Table': Table
+  methods: {
+    // 请求表格数据
+    loadTableData () {
+      let that = this
+      let url = this.url + '&pageNo=' + this.pageCurrent + '&token=' + this.token
+      fetch.post(url, this.params).then(function (res) {
+        if (res.code === 200) {
+          that.dataSource = res.obj.list
+          that.pageTotal = res.obj.total
+        } else {
+          that.$Message.error(res.msg)
+        }
+        that.tableLoading = false
+      }).catch(function (error) {
+        that.$Message.warning(error)
+        that.tableLoading = false
+      })
+    },
+    // 分页
+    changePage (num) {
+      this.pageCurrent = num
+      this.loadTableData()
+      console.log(num)
+    }
   }
 }
 </script>
 
-<style>
+<style scoped="scoped">
+.container {
+  padding: 15px;
+}
+
+.page-container {
+  margin: 15px;
+  overflow: hidden;
+}
+
+.page-box {
+  float: right;
+}
 </style>

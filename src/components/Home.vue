@@ -1,15 +1,13 @@
 <template>
   <div class="hello">
-    <h1>{{msg}}</h1>
     <!-- 添加子路由导航 -->
     <p>
       导航：
       <router-link to="/">首页</router-link>
-      <router-link to="/oneother">子页面1</router-link>
       <router-link to="/home/two/1/张三">子页面2</router-link>
       <router-link :to="{name: 'three', params: {id: 3,name: '王五'}}">子页面3</router-link>
       <router-link to="/count">vuex页面</router-link>
-      <router-link to="/manage/archiveManage">table页面</router-link>
+      <router-link to="/testTable">自定义Table</router-link>
     </p>
     <!-- 子页面展示部分 -->
     <transition name="fade" mode="out-in">
